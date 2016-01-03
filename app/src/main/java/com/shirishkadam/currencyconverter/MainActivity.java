@@ -13,6 +13,10 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
+    // The Yahoo Finance API
+
+    final static String yahoo_finance_api = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.xchange%20where%20pair%3D%22USDINR%2C%20EURINR%2CCADINR%2CJPYINR%2CGBPINR%22&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -20,19 +24,20 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportActionBar().hide();
 
-        String yahoo_finance_api = "https://query.yahooapis.com/v1/public/yql?q=select%20*%20from%20yahoo.finance.xchange%20where%20pair%3D%22USDINR%2C%20EURINR%2CCADINR%2CJPYINR%2CGBPINR%22&format=json&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys";
-
         ConnectivityManager cm = (ConnectivityManager)getSystemService(CONNECTIVITY_SERVICE);
         NetworkInfo ni = cm.getActiveNetworkInfo();
 
         if(ni != null && ni.isConnected()){
 
             Toast.makeText(getApplicationContext(),"Exchange Rates Updating...!",Toast.LENGTH_SHORT).show();
-            new GetExchageRates(MainActivity.this).execute(yahoo_finance_api);
+
+            new GetExchageRates(MainActivity.this).execute(yahoo_finance_api);                                  // AsyncTask
 
         }else {
             Toast.makeText(getApplicationContext(),"Network Connection failed. Currency rates not updated!",Toast.LENGTH_LONG).show();
         }
+
+        // Shared Preferences, the keys are standard currency symbols and same as the keys of JSON returned data.
 
         SharedPreferences sf = getSharedPreferences("Exchange_Rates",MODE_PRIVATE);
         final float gbp_rate = sf.getFloat("GBP/INR", 0);
@@ -59,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if(editable.length()!=0){
+                if(editable.length()!=0){                                                           // To eliminate crashes when EditText being erased to zero
                 in.setText(""+Float.parseFloat(us.getText().toString()) * usd_rate);
                 }
             }

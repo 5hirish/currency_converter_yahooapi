@@ -24,7 +24,7 @@ import java.util.Iterator;
  * Created by felix on 28/12/15.
  */
 
-public class GetExchageRates extends AsyncTask<String,Void,String>{
+public class GetExchageRates extends AsyncTask <String,Void,String> {             // Parameters - Progress unit - Result
 
     Activity mactivity;
 
@@ -79,7 +79,7 @@ public class GetExchageRates extends AsyncTask<String,Void,String>{
 
     protected void onPostExecute(String exchage_rates){
 
-        SharedPreferences sf = (SharedPreferences) mactivity.getSharedPreferences("Exchange_Rates", Context.MODE_PRIVATE);
+        SharedPreferences sf = mactivity.getSharedPreferences("Exchange_Rates", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sf.edit();
 
         JSONParser parser = new JSONParser();
@@ -88,9 +88,9 @@ public class GetExchageRates extends AsyncTask<String,Void,String>{
             JSONObject jb = (JSONObject) parser.parse(exchage_rates);
             JSONObject jb_query = (JSONObject) parser.parse(jb.get("query").toString());
             JSONObject jb_results = (JSONObject) parser.parse(jb_query.get("results").toString());
-            JSONArray jb_rates = (JSONArray) parser.parse(jb_results.get("rate").toString());
+            JSONArray jb_rates = (JSONArray) parser.parse(jb_results.get("rate").toString());           // JSON Array
 
-            Iterator<JSONObject> it = jb_rates.iterator();
+            Iterator <JSONObject> it = jb_rates.iterator();
 
             while (it.hasNext()){
 
