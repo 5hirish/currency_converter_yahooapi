@@ -11,6 +11,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Currency;
+import java.util.Locale;
+
 public class MainActivity extends AppCompatActivity {
 
     // The Yahoo Finance API
@@ -39,14 +42,16 @@ public class MainActivity extends AppCompatActivity {
 
         // Shared Preferences, the keys are standard currency symbols and same as the keys of JSON returned data.
 
-        SharedPreferences sf = getSharedPreferences("Exchange_Rates",MODE_PRIVATE);
-        final float gbp_rate = sf.getFloat("GBP/INR", 0);
+        SharedPreferences sf = getSharedPreferences("Exchange_Rates", MODE_PRIVATE);
+        final float gbp_rate = sf.getFloat("GBP/INR",0);
         final float usd_rate = sf.getFloat("USD/INR",0);
         final float eur_rate = sf.getFloat("EUR/INR",0);
         final float cad_rate = sf.getFloat("CAD/INR",0);
         final float jpn_rate = sf.getFloat("JPY/INR",0);
 
-
+        if(gbp_rate == 0 || usd_rate == 0 || eur_rate == 0 || cad_rate == 0 || jpn_rate == 0){
+            Toast.makeText(getApplicationContext(),"Obsolete Currency Rates...!",Toast.LENGTH_LONG).show();
+        }
 
         final TextView in = (TextView)findViewById(R.id.in_text);
         final EditText us = (EditText)findViewById(R.id.us_text);
@@ -54,6 +59,9 @@ public class MainActivity extends AppCompatActivity {
         final EditText gb = (EditText)findViewById(R.id.gb_text);
         final EditText ge = (EditText)findViewById(R.id.ge_text);
         final EditText jp = (EditText)findViewById(R.id.jp_text);
+
+        final Currency currency_inr = Currency.getInstance("INR");
+        in.setText(currency_inr.getSymbol(Locale.ENGLISH) +" 00.00");
 
         us.addTextChangedListener(new TextWatcher() {
             @Override
@@ -64,8 +72,9 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
+
                 if(editable.length()!=0){                                                           // To eliminate crashes when EditText being erased to zero
-                in.setText(""+Float.parseFloat(us.getText().toString()) * usd_rate);
+                in.setText(currency_inr.getSymbol(Locale.ENGLISH) +" "+Float.parseFloat(us.getText().toString()) * usd_rate);
                 }
             }
         });
@@ -82,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 if (editable.length() != 0) {
-                    in.setText("" + Float.parseFloat(ca.getText().toString()) * cad_rate);
+                    in.setText(currency_inr.getSymbol(Locale.ENGLISH) +" " + Float.parseFloat(ca.getText().toString()) * cad_rate);
                 }
             }
         });
@@ -99,7 +108,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 if (editable.length() != 0) {
-                    in.setText("" + Float.parseFloat(gb.getText().toString()) * gbp_rate);
+                    in.setText(currency_inr.getSymbol(Locale.ENGLISH) +" " + Float.parseFloat(gb.getText().toString()) * gbp_rate);
                 }
             }
         });
@@ -116,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 if (editable.length() != 0) {
-                    in.setText("" + Float.parseFloat(ge.getText().toString()) * eur_rate);
+                    in.setText(currency_inr.getSymbol(Locale.ENGLISH) +" " + Float.parseFloat(ge.getText().toString()) * eur_rate);
                 }
             }
         });
@@ -133,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 if (editable.length() != 0) {
-                    in.setText("" + Float.parseFloat(jp.getText().toString()) * jpn_rate);
+                    in.setText(currency_inr.getSymbol(Locale.ENGLISH) +" " + Float.parseFloat(jp.getText().toString()) * jpn_rate);
                 }
             }
         });
